@@ -2,11 +2,17 @@
 
 .PHONY: fmt vet build
 fmt:
-	go fmt ./..
+	go fmt .
 
 vet: fmt
-	go vet ./..
+	go vet .
 
-build: fmt vet
-	go build ./..
+build: vet clean
+	go build -o ./bin/ . 
 	@echo "Build complete."
+
+clean:
+	go clean ./bin
+
+test:
+	go test .
