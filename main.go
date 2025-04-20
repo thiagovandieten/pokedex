@@ -14,6 +14,8 @@ type cliCommand struct {
 	callback    func() error
 }
 
+var commands map[string]cliCommand
+
 func cleanInput(text string) ([]string, error) {
 	if len(text) == 0 {
 		return []string{}, errors.New("input is empty")
