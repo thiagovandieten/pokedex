@@ -22,20 +22,34 @@ func cleanInput(text string) ([]string, error) {
 }
 
 func commandExit() error {
-	fmt.Println("Closing the Pokedex...goodbye!")
+	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-var commands map[string]cliCommand = map[string]cliCommand{
-	"exit": {
-		name:        "exit",
-		description: "Exit the pokedex",
-		callback:    commandExit,
-	},
+func commandHelp() error {
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Usage:")
+	for _, cmd := range commands {
+		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
+	}
+	return nil
 }
 
 func main() {
+	commands = map[string]cliCommand{
+		"exit": {
+			name:        "exit",
+			description: "Exit the pokedex",
+			callback:    commandExit,
+		},
+		"help": {
+			name:        "help",
+			description: "Displays a help message",
+			callback:    commandHelp,
+		},
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -50,6 +64,8 @@ func main() {
 
 		if c, ok := commands[cleanedLine[0]]; ok {
 			c.callback()
+		} else {
+			fmt.Println("Unknown command")
 		}
 
 	}
