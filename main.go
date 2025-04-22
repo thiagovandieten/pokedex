@@ -6,15 +6,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/thiagovandieten/pokedex/commands"
 )
 
-type cliCommand struct {
-	name        string
-	description string
-	callback    func() error
-}
+// type cliCommand struct {
+// 	name        string
+// 	description string
+// 	callback    func() error
+// }
 
-var commands map[string]cliCommand
+// var currentCommands map[string]CliCommand
 
 func cleanInput(text string) ([]string, error) {
 	if len(text) == 0 {
@@ -23,35 +25,26 @@ func cleanInput(text string) ([]string, error) {
 	return strings.Split(strings.ToLower(strings.TrimSpace(text)), " "), nil
 }
 
-func commandExit() error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
-}
+// func commandExit() error {
+// 	fmt.Println("Closing the Pokedex... Goodbye!")
+// 	os.Exit(0)
+// 	return nil
+// }
 
-func commandHelp() error {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Usage:")
-	for _, cmd := range commands {
-		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
-	}
-	return nil
-}
+// func commandMap() error {
+// 	return nil
+// }
+
+// func commandHelp() error {
+// 	fmt.Println("Welcome to the Pokedex!")
+// 	fmt.Println("Usage:")
+// 	for _, cmd := range commands {
+// 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
+// 	}
+// 	return nil
+// }
 
 func main() {
-	commands = map[string]cliCommand{
-		"exit": {
-			name:        "exit",
-			description: "Exit the pokedex",
-			callback:    commandExit,
-		},
-		"help": {
-			name:        "help",
-			description: "Displays a help message",
-			callback:    commandHelp,
-		},
-	}
-
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -62,12 +55,13 @@ func main() {
 			fmt.Println("no input")
 			os.Exit(1)
 		}
-		fmt.Printf("Your command was: %s\n", cleanedLine[0])
+		fmt.Printf("Your command is: %s\n", cleanedLine[0])
 
-		if c, ok := commands[cleanedLine[0]]; ok {
-			c.callback()
-		} else {
-			fmt.Println("Unknown command")
+		if len(cleanedLine) > 0 {
+			fmt.Printf("Your command is: %s\n", cleanedLine[0])
+			if err := commands.ExecuteCommand(cleanedLine[0]); err != nil {
+				fmt.Println(err)
+			}
 		}
 
 	}
