@@ -28,10 +28,9 @@ func main() {
 			fmt.Println("no input")
 			os.Exit(1)
 		}
-		fmt.Printf("Your command is: %s\n", cleanedLine[0])
+		// fmt.Printf("Your command is: %s\n", cleanedLine[0])
 
 		if len(cleanedLine) > 0 {
-			fmt.Printf("Your command is: %s\n", cleanedLine[0])
 			if err := commands.ExecuteCommand(cleanedLine[0]); err != nil {
 				fmt.Println(err)
 			}
