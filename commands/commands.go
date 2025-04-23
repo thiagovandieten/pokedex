@@ -2,8 +2,8 @@ package commands
 
 import (
 	"fmt"
+	"net/url"
 	"os"
-	"strings"
 
 	"github.com/thiagovandieten/pokedex/pokeapi"
 )
@@ -58,7 +58,12 @@ func CommandMap() error {
 	var query_param string
 	fmt.Printf("LOG: query_param = %s\n", query_param)
 	if len(nextLocationURL) != 0 {
-		query_param = "?" + strings.TrimLeft(nextLocationURL, "?")
+		p, err := url.Parse(nextLocationURL)
+		if err != nil {
+			return err
+		}
+
+		query_param = "?" + p.RawQuery
 	}
 	fmt.Printf("LOG: query_param after nlURL check = %s\n", query_param)
 

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var apiURL string = "https://pokeapi.co/api/v2/location-area/"
+var apiURL string = "https://pokeapi.co/api/v2/location-area"
 
 type LocationAreas struct {
 	Count    int    `json:"count"`
@@ -20,7 +20,7 @@ type LocationAreas struct {
 
 func GetLocationAreas(query_param string) (LocationAreas, error) {
 	var location_areas LocationAreas
-	fmt.Printf("LOG: apiURL + query_param = %s%s\n", apiURL, query_param)
+	// fmt.Printf("LOG: apiURL + query_param = %s%s\ne", apiURL, query_param)
 	res, err := http.Get(apiURL + query_param)
 	if err != nil {
 		return location_areas, fmt.Errorf("REQUEST FAILED: %v", err)
