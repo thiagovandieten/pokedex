@@ -1,11 +1,10 @@
-package commands
+package main
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 
-	"github.com/thiagovandieten/pokedex/pokeapi"
+	"github.com/thiagovandieten/pokedex/internal/pokeapi"
 )
 
 type CliCommand struct {
@@ -17,8 +16,9 @@ type CliCommand struct {
 var cmdMap map[string]CliCommand
 
 type Config struct {
-	Next     string
-	Previous string
+	pokeapiClient pokeapi.Client
+	Next          *string
+	Previous      *string
 }
 
 func init() {
@@ -50,13 +50,13 @@ func init() {
 
 }
 
-func CommandExit(c *Config) error {
+func CommandExit(cfg *Config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func CommandHelp(c *Config) error {
+func CommandHelp(cfg *Config) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	for _, cmd := range cmdMap {
@@ -65,24 +65,18 @@ func CommandHelp(c *Config) error {
 	return nil
 }
 
-func CommandMap(c *Config) error {
-	var query_param string
-	// fmt.Printf("Config struct: %+v", c)
-	if len(c.Next) != 0 {
-		query_param = constructQueryParam(c.Next)
-	}
-	// fmt.Printf("LOG: query_param after nlURL check = %s\n", query_param)
+func CommandMap(cfg *Config) error {
 
-	la, err := pokeapi.GetLocationAreas(query_param)
+	la, err := cfg.pokeapiClient.ListLocations(cfg.Next)
 	if err != nil {
 		return err
 	}
 
 	if la.Previous != nil {
-		c.Previous = *la.Previous
+		cfg.Previous = la.Previous
 	}
-	if len(la.Next) != 0 {
-		c.Next = la.Next
+	if la.Next != nil {
+		cfg.Next = la.Next
 	}
 
 	for _, result := range la.Results {
@@ -92,26 +86,19 @@ func CommandMap(c *Config) error {
 	return nil
 }
 
-func CommandMapB(c *Config) error {
+func CommandMapB(cfg *Config) error {
 	// fmt.Printf("Config struct: %+v", c)
-	var query_param string
-	if len(c.Next) != 0 {
-		query_param = constructQueryParam(c.Previous)
-	} else {
-		fmt.Println("You are on the first page.")
-		return nil
-	}
 
-	la, err := pokeapi.GetLocationAreas(query_param)
+	la, err := cfg.pokeapiClient.ListLocations(cfg.Previous)
 	if err != nil {
 		return err
 	}
 
 	if la.Previous != nil {
-		c.Previous = *la.Previous
+		cfg.Previous = la.Previous
 	}
-	if len(la.Next) != 0 {
-		c.Next = la.Next
+	if la.Next != nil {
+		cfg.Next = la.Next
 	}
 
 	for _, result := range la.Results {
@@ -121,19 +108,9 @@ func CommandMapB(c *Config) error {
 	return nil
 }
 
-func constructQueryParam(link string) string {
-	p, err := url.Parse(link)
-	if err != nil {
-		return ""
-	}
-
-	query_param := "?" + p.RawQuery
-	return query_param
-}
-
-func ExecuteCommand(name string, args *Config) error {
+func ExecuteCommand(name string, cfg *Config) error {
 	if cmd, ok := cmdMap[name]; ok {
-		return cmd.Callback(args)
+		return cmd.Callback(cfg)
 	}
 	return fmt.Errorf("unknown command: %s", name)
 }
