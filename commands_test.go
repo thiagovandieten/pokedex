@@ -9,7 +9,7 @@ import (
 func TestCmdExit(t *testing.T) {
 	c := Config{}
 	if os.Getenv("BE_CRASHER") == "1" {
-		CommandExit(&c)
+		CommandExit(&c, []string{})
 		return
 	}
 	cmd := exec.Command(os.Args[0], "-test.run=TestCmdExit")

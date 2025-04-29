@@ -10,7 +10,7 @@ import (
 type CliCommand struct {
 	Name        string
 	Description string
-	Callback    func(c *Config) error
+	Callback    func(c *Config, args []string) error
 }
 
 var cmdMap map[string]CliCommand
@@ -50,13 +50,13 @@ func init() {
 
 }
 
-func CommandExit(cfg *Config) error {
+func CommandExit(cfg *Config, args []string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func CommandHelp(cfg *Config) error {
+func CommandHelp(cfg *Config, args []string) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	for _, cmd := range cmdMap {
@@ -65,7 +65,7 @@ func CommandHelp(cfg *Config) error {
 	return nil
 }
 
-func CommandMap(cfg *Config) error {
+func CommandMap(cfg *Config, args []string) error {
 
 	la, err := cfg.pokeapiClient.ListLocations(cfg.Next)
 	if err != nil {
@@ -86,7 +86,7 @@ func CommandMap(cfg *Config) error {
 	return nil
 }
 
-func CommandMapB(cfg *Config) error {
+func CommandMapB(cfg *Config, args []string) error {
 	// fmt.Printf("Config struct: %+v", c)
 
 	la, err := cfg.pokeapiClient.ListLocations(cfg.Previous)
@@ -108,9 +108,9 @@ func CommandMapB(cfg *Config) error {
 	return nil
 }
 
-func ExecuteCommand(name string, cfg *Config) error {
+func ExecuteCommand(name string, cfg *Config, args ...string) error {
 	if cmd, ok := cmdMap[name]; ok {
-		return cmd.Callback(cfg)
+		return cmd.Callback(cfg, args)
 	}
 	return fmt.Errorf("unknown command: %s", name)
 }
