@@ -108,7 +108,22 @@ func CommandMapB(cfg *Config, args []string) error {
 	return nil
 }
 
+func CommandExplore(name string, cfg *Config, args ...string) error {
+	return nil
+}
 func ExecuteCommand(name string, cfg *Config, args ...string) error {
+
+	var cleanedArgs = []string{}
+	if args != nil {
+		for _, arg := range args {
+			_, err := cleanInput(arg)
+			if err != nil {
+				return err
+			}
+			cleanedArgs = append(cleanedArgs)
+		}
+	}
+
 	if cmd, ok := cmdMap[name]; ok {
 		return cmd.Callback(cfg, args)
 	}
