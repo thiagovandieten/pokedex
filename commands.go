@@ -48,6 +48,12 @@ func init() {
 		Callback:    CommandMapB,
 	}
 
+	cmdMap["explore"] = CliCommand{
+		Name:        "explore",
+		Description: "Explores a area given from map and retrives all the pokemon",
+		Callback:    CommandExplore,
+	}
+
 }
 
 func CommandExit(cfg *Config, args []string) error {
@@ -108,22 +114,24 @@ func CommandMapB(cfg *Config, args []string) error {
 	return nil
 }
 
-func CommandExplore(name string, cfg *Config, args ...string) error {
-	return nil
-}
-func ExecuteCommand(name string, cfg *Config, args ...string) error {
-
-	var cleanedArgs = []string{}
-	if args != nil {
-		for _, arg := range args {
-			_, err := cleanInput(arg)
-			if err != nil {
-				return err
-			}
-			cleanedArgs = append(cleanedArgs)
-		}
+func CommandExplore(cfg *Config, args []string) error {
+	location, err := cfg.pokeapiClient.ListPokemon(args[0])
+	if err != nil {
+		return err
 	}
 
+	if len(location.PokemonEncounters) < 1 {
+		return fmt.Errorf("no pokemon in area")
+	}
+
+	fmt.Println("Found Pokemon:")
+	for _, v := range location.PokemonEncounters {
+		fmt.Printf("- %s\n", v.Pokemon.Name)
+	}
+	return nil
+
+}
+func ExecuteCommand(name string, cfg *Config, args []string) error {
 	if cmd, ok := cmdMap[name]; ok {
 		return cmd.Callback(cfg, args)
 	}

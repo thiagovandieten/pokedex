@@ -27,9 +27,12 @@ func startRepl(cfg *Config) {
 			os.Exit(1)
 		}
 		// fmt.Printf("Your command is: %s\n", cleanedLine[0])
-
+		args := []string{}
+		if len(cleanedLine) > 1 {
+			args = cleanedLine[1:]
+		}
 		if len(cleanedLine) > 0 {
-			if err := ExecuteCommand(cleanedLine[0], cfg); err != nil {
+			if err := ExecuteCommand(cleanedLine[0], cfg, args); err != nil {
 				fmt.Println(err)
 			}
 		}
