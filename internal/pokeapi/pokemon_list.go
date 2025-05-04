@@ -16,6 +16,14 @@ func (c *Client) ListPokemon(area string) (Location, error) {
 	}
 
 	//TODO: Check if in cache
+	if value, ok := c.cache.GetCache(url); ok {
+		l := Location{}
+		err := json.Unmarshal(value, &l)
+		if err != nil {
+			return Location{}, err
+		}
+		return l, nil
+	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -34,6 +42,7 @@ func (c *Client) ListPokemon(area string) (Location, error) {
 	}
 
 	//TODO: Add to cache
+	c.cache.AddCache(url, dat)
 
 	l := Location{}
 	err = json.Unmarshal(dat, &l)
