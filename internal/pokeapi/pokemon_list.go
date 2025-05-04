@@ -41,5 +41,5 @@ func (c *Client) ListPokemon(area string) (Location, error) {
 		return Location{}, err
 	}
 
-	return Location{}, nil
+	return l, nil
 }

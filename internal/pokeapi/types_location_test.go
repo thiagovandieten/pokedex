@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func readAndUnmarshalJSON(filePath string) (Location, error) {
+func locationReadAndUnmarshalJSON(filePath string) (Location, error) {
 	var result Location // Variable to hold the unmarshaled data
 
 	// 2. Read the file content
@@ -27,7 +27,7 @@ func readAndUnmarshalJSON(filePath string) (Location, error) {
 
 func TestStructJSON(T *testing.T) {
 	filePath := "test_assets/types_location.json"
-	data, err := readAndUnmarshalJSON(filePath)
+	data, err := locationReadAndUnmarshalJSON(filePath)
 	if err != nil {
 		T.Fatalf("Failed to read/unmarshal %v", err)
 	}
