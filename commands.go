@@ -54,6 +54,12 @@ func init() {
 		Callback:    CommandExplore,
 	}
 
+	cmdMap["catch"] = CliCommand{
+		Name:        "catch",
+		Description: "Attempts to catching a Pokemon entered",
+		Callback:    CommandCatch,
+	}
+
 }
 
 func CommandExit(cfg *Config, args []string) error {
@@ -131,6 +137,15 @@ func CommandExplore(cfg *Config, args []string) error {
 	return nil
 
 }
+
+func CommandCatch(cfg *Config, args []string) error {
+	fmt.Printf("Throwing a Pokeball at %s\n", args[0])
+	// Get Pokemon's data
+	// Do a rand calculation with their base exprience, the higher the base the harder the catchrate
+	// If caught, add to pokedex
+	return nil
+}
+
 func ExecuteCommand(name string, cfg *Config, args []string) error {
 	if cmd, ok := cmdMap[name]; ok {
 		return cmd.Callback(cfg, args)
