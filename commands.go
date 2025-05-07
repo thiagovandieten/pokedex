@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"os"
 
 	"github.com/thiagovandieten/pokedex/internal/pokeapi"
@@ -17,6 +18,7 @@ var cmdMap map[string]CliCommand
 
 type Config struct {
 	pokeapiClient pokeapi.Client
+	pokeDex       *map[string]pokeapi.Pokemon
 	Next          *string
 	Previous      *string
 }
@@ -58,6 +60,11 @@ func init() {
 		Name:        "catch",
 		Description: "Attempts to catching a Pokemon entered",
 		Callback:    CommandCatch,
+	}
+	cmdMap["printpokedex"] = CliCommand{
+		Name:        "printpokedex",
+		Description: "Test command to see the current pokedex",
+		Callback:    CommandPrintPokedex,
 	}
 
 }
@@ -139,10 +146,32 @@ func CommandExplore(cfg *Config, args []string) error {
 }
 
 func CommandCatch(cfg *Config, args []string) error {
-	fmt.Printf("Throwing a Pokeball at %s\n", args[0])
+	fmt.Printf("Throwing a Pokeball at %s...\n", args[0])
+
+	n := rand.IntN(255)
 	// Get Pokemon's data
+	p, err := cfg.pokeapiClient.GetPokemon(args[0])
+	if err != nil {
+		return err
+	}
 	// Do a rand calculation with their base exprience, the higher the base the harder the catchrate
-	// If caught, add to pokedex
+	if n > p.BaseExperience {
+		(*cfg.pokeDex)[p.Name] = p
+		fmt.Printf("%s was caught!\n", p.Name)
+	} else {
+		fmt.Printf("%s escaped!\n", p.Name)
+	}
+	// If caught, add to pokedex and
+
+	return nil
+}
+
+func CommandPrintPokedex(cfg *Config, args []string) error {
+	if (*cfg.pokeDex) != nil {
+		fmt.Printf("%#v", (*cfg.pokeDex))
+	} else {
+		return fmt.Errorf("pokedex uninitalized")
+	}
 	return nil
 }
 

@@ -8,10 +8,10 @@ import (
 
 func main() {
 	pokeClient := pokeapi.NewClient(5 * time.Second)
-	// pokeCache := pokecache.NewCache(time.Second*15, []byte{})
+	pokeDex := make(map[string]pokeapi.Pokemon)
 	cfg := &Config{
 		pokeapiClient: pokeClient,
-		// pokeCache:     pokeCache,
+		pokeDex:       &pokeDex,
 	}
 	startRepl(cfg)
 }
