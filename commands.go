@@ -66,6 +66,11 @@ func init() {
 		Description: "Test command to see the current pokedex",
 		Callback:    CommandPrintPokedex,
 	}
+	cmdMap["inspect"] = CliCommand{
+		Name:        "inspect",
+		Description: "Command to view information about your caught pokemon",
+		Callback:    CommandInspect,
+	}
 
 }
 
@@ -172,6 +177,32 @@ func CommandPrintPokedex(cfg *Config, args []string) error {
 	} else {
 		return fmt.Errorf("pokedex uninitalized")
 	}
+	return nil
+}
+
+func CommandInspect(cfg *Config, args []string) error {
+	pokemon, ok := (*cfg.pokeDex)[args[0]]
+	if !ok {
+		return fmt.Errorf("Pokemon not found in the pokedex!")
+	}
+
+	/*
+		Output the pokemon's information like so:
+		Name: name
+		Height: int
+		Weight: int
+		Stats:
+			-hp: int
+			-attack: int
+			-defense: int
+			-special-attack: int
+			-special-defense: int
+			-speed: int
+		Types:
+			- string
+			- string
+	*/
+
 	return nil
 }
 
