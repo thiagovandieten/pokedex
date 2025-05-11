@@ -183,26 +183,10 @@ func CommandPrintPokedex(cfg *Config, args []string) error {
 func CommandInspect(cfg *Config, args []string) error {
 	pokemon, ok := (*cfg.pokeDex)[args[0]]
 	if !ok {
-		return fmt.Errorf("Pokemon not found in the pokedex!")
+		return fmt.Errorf("pokemon not found in the pokedex")
 	}
 
-	/*
-		Output the pokemon's information like so:
-		Name: name
-		Height: int
-		Weight: int
-		Stats:
-			-hp: int
-			-attack: int
-			-defense: int
-			-special-attack: int
-			-special-defense: int
-			-speed: int
-		Types:
-			- string
-			- string
-	*/
-
+	pokemon.PrintInfo()
 	return nil
 }
 

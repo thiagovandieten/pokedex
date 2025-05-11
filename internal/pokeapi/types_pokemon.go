@@ -1,5 +1,7 @@
 package pokeapi
 
+import "fmt"
+
 type Pokemon struct {
 	BaseExperience int     `json:"base_experience"`
 	Height         int     `json:"height"`
@@ -28,4 +30,19 @@ type Types struct {
 type Type struct {
 	Name string `json:"name"`
 	URL  string `json:"url"`
+}
+
+func (p Pokemon) PrintInfo() {
+	fmt.Printf("Name: %s\n", p.Name)
+	fmt.Printf("Height: %d\n", p.Height)
+	fmt.Printf("Weight: %d\n", p.Weight)
+	fmt.Printf("Stats:\n")
+	for _, stat := range p.Stats {
+		fmt.Printf("\t -%s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+	fmt.Printf("Stats:\n")
+	for _, t := range p.Types {
+		fmt.Printf("\t- %s\n", t.Type.Name)
+	}
+
 }
